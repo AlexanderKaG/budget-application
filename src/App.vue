@@ -1,47 +1,72 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref, computed } from 'vue'
+
+const masterList = ref([
+  { id: 1, name: 'Salary', amount: 3000, category: 'Income' },
+  { id: 2, name: 'Groceries', amount: -200, category: 'Food' },
+  { id: 3, name: 'Internet', amount: -100, category: 'Utilities' },
+  { id: 4, name: 'Bonus', amount: 500, category: 'Income' },
+  { id: 5, name: 'Bus ticket', amount: -30 }, // no category
+])
+
+const categories = ref([
+  { name: 'Income', target: 2500 },
+  { name: 'Food', target: -300 },
+  { name: 'Utilities', target: -150 },
+])
+
+const categorized = computed(() => {
+  const grouped = {}
+  const uncategorized = []
+
+  masterList.value.forEach((item) => {
+    if (item.category) {
+      if (!grouped[item.category]) grouped[item.category] = []
+      grouped[item.category].push(item)
+    } else {
+      uncategorized.push(item)
+    }
+  })
+
+  return { grouped, uncategorized }
+})
+
+const categorySummaries = computed(() => {
+  return categories.value.map((category) => {
+    const items = categorized.value.grouped[category.name] || []
+    const sum = items.reduce((acc, item) => acc + item.amount, 0)
+    const isOverTarget = category.target >= 0 ? sum >= category.target : sum <= category.target
+
+    return {
+      name: category.name,
+      items,
+      sum,
+      target: category.target,
+      status: isOverTarget ? 'green' : 'red',
+    }
+  })
+})
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div v-for="category in categorySummaries" :key="category.name">
+    <h3>
+      {{ category.name }} -
+      <span :style="{ color: category.status }"> {{ category.sum }} / {{ category.target }} </span>
+    </h3>
+    <ul>
+      <li v-for="item in category.items" :key="item.id">{{ item.name }} - {{ item.amount }}</li>
+    </ul>
+  </div>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div>
+    <h3>Uncategorized</h3>
+    <ul>
+      <li v-for="item in categorized.uncategorized" :key="item.id">
+        {{ item.name }} - {{ item.amount }}
+      </li>
+    </ul>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+<style scoped></style>
