@@ -1,19 +1,13 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
+import { useMasterList } from '@/composables/useMasterList'
+import { useCategories } from '@/composables/useCategories'
+import { useAddItem } from '@/composables/useAddItem'
+import EntryForm from '@/components/EntryForm.vue'
 
-const masterList = ref([
-  { id: 1, name: 'Salary', amount: 3000, category: 'Income' },
-  { id: 2, name: 'Groceries', amount: -200, category: 'Food' },
-  { id: 3, name: 'Internet', amount: -100, category: 'Utilities' },
-  { id: 4, name: 'Bonus', amount: 500, category: 'Income' },
-  { id: 5, name: 'Bus ticket', amount: -30 }, // no category
-])
-
-const categories = ref([
-  { name: 'Income', target: 2500 },
-  { name: 'Food', target: -300 },
-  { name: 'Utilities', target: -150 },
-])
+const { masterList } = useMasterList()
+const { categories } = useCategories()
+const { addItem } = useAddItem()
 
 const categorized = computed(() => {
   const grouped = {}
@@ -46,26 +40,55 @@ const categorySummaries = computed(() => {
     }
   })
 })
+
+function updateCategory(item) {
+  const newCategory = item._tempCategory?.trim() || ''
+  item.category = newCategory
+  delete item._tempCategory
+}
 </script>
 
 <template>
-  <div v-for="category in categorySummaries" :key="category.name">
-    <h3>
-      {{ category.name }} -
-      <span :style="{ color: category.status }"> {{ category.sum }} / {{ category.target }} </span>
-    </h3>
-    <ul>
-      <li v-for="item in category.items" :key="item.id">{{ item.name }} - {{ item.amount }}</li>
-    </ul>
-  </div>
+  <EntryForm @submit="addItem" />
 
-  <div>
-    <h3>Uncategorized</h3>
-    <ul>
-      <li v-for="item in categorized.uncategorized" :key="item.id">
-        {{ item.name }} - {{ item.amount }}
-      </li>
-    </ul>
+  <!-- Flex container for all category lists -->
+  <div class="category-columns">
+    <!-- Uncategorized FIRST -->
+    <div class="category">
+      <h3>Uncategorized</h3>
+      <ul>
+        <li v-for="item in categorized.uncategorized" :key="item.id">
+          {{ item.name }} - {{ item.amount }}
+          <input
+            :value="item.category"
+            @input="(e) => (item._tempCategory = e.target.value)"
+            @blur="updateCategory(item)"
+            @keyup.enter="updateCategory(item)"
+            placeholder="Enter category"
+          />
+        </li>
+      </ul>
+    </div>
+
+    <!-- Then categorized groups -->
+    <div v-for="category in categorySummaries" :key="category.name" class="category">
+      <h3>
+        {{ category.name }} |
+        <span> {{ category.sum }} / {{ category.target }} </span>
+      </h3>
+      <ul>
+        <li v-for="item in category.items" :key="item.id">
+          {{ item.name }} - {{ item.amount }}
+          <input
+            :value="item.category"
+            @input="(e) => (item._tempCategory = e.target.value)"
+            @blur="updateCategory(item)"
+            @keyup.enter="updateCategory(item)"
+            placeholder="Edit category"
+          />
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
