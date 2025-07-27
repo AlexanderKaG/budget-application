@@ -1,16 +1,16 @@
 <script setup>
 import { useCategories } from '@/composables/useCategories'
-import { useAddItem } from '@/composables/useAddItem'
-import EntryForm from '@/components/EntryForm.vue'
+import { useAddCategory } from '@/composables/useAddCategory'
 import BudgetCategory from '@/components/BudgetCategory.vue'
+import AddCategoryForm from './components/AddCategoryForm.vue'
 const { categories } = useCategories()
-const { addItem } = useAddItem()
+const { addCategory } = useAddCategory()
 </script>
 
 <template>
-  <EntryForm @submit="addItem" />
+  <AddCategoryForm @submit="addCategory" />
 
-  <BudgetCategory v-for="category in categories" :key="category.name" :category="category" />
+  <BudgetCategory v-for="category in categories" :key="category.id" :category="category" />
 </template>
 
 <style scoped></style>

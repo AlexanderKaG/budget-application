@@ -1,8 +1,11 @@
 <script setup>
 import { useMasterList } from '@/composables/useMasterList'
 import { computed } from 'vue'
+import EntryForm from './EntryForm.vue'
+import { useAddItem } from '@/composables/useAddItem'
 
 const { masterList } = useMasterList()
+const { addItem } = useAddItem()
 
 const props = defineProps({
   category: Object,
@@ -17,6 +20,7 @@ const spent = computed(() => categorizedItems.value.reduce((total, item) => tota
 
 <template>
   <div>
+    <EntryForm :category="category" @submit="addItem" />
     <h2>
       <div>
         {{ category.name }}
