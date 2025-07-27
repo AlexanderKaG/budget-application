@@ -15,6 +15,7 @@ export function useAddItem() {
       const exists = categories.value.some((c) => c.name === trimmedCategory)
       if (!exists) {
         categories.value.push({
+          id: crypto.randomUUID(),
           name: trimmedCategory,
           target: 0,
         })
