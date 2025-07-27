@@ -27,6 +27,7 @@ export function useAddItem() {
       name: item.name,
       amount: Number(item.amount),
       category: trimmedCategory || undefined,
+      purchased: false,
     })
   }
 
