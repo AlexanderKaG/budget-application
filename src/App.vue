@@ -10,7 +10,13 @@ const { addCategory } = useAddCategory()
 <template>
   <AddCategoryForm @submit="addCategory" />
 
-  <BudgetCategory v-for="category in categories" :key="category.id" :category="category" />
+  <div class="categories-container">
+    <BudgetCategory v-for="category in categories" :key="category.id" :category="category" />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.categories-container {
+  display: flex;
+}
+</style>
