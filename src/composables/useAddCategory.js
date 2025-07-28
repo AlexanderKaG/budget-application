@@ -1,4 +1,3 @@
-// src/composables/useAddItem.js
 import { useCategories } from './useCategories'
 
 export function useAddCategory() {
@@ -16,6 +15,8 @@ export function useAddCategory() {
       id: crypto.randomUUID(),
       name: item.name,
       target: Number(item.target),
+      items: item.items,
+      subcategories: item.subcategories,
     })
   }
 

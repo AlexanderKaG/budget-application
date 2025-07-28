@@ -10,21 +10,22 @@ const props = defineProps({
 const formItem = ref({
   name: '',
   amount: '',
+  subcategory: '',
 })
 
 function handleSubmit() {
-  const rawAmount = parseFloat(formItem.value.amount.toString().replace(',', '.'))
-  const parsedAmount = parseFloat(rawAmount)
+  const amount = parseFloat(formItem.value.amount.toString().replace(',', '.'))
 
   emit('submit', {
-    name: formItem.value.name.trim(),
-    amount: isNaN(parsedAmount) ? null : parsedAmount,
-    category: props.category.name,
+    name: formItem.value.name,
+    amount: isNaN(amount) ? null : amount,
+    subcategory: formItem.value.subcategory.trim(),
+    category: props.category, // this is the top-level category node
   })
 
-  // Reset form
   formItem.value.name = ''
-  formItem.value.amount = null
+  formItem.value.amount = ''
+  formItem.value.subcategory = ''
 }
 </script>
 
@@ -32,6 +33,7 @@ function handleSubmit() {
   <form @submit.prevent="handleSubmit">
     <input v-model="formItem.name" placeholder="Name" required />
     <input v-model="formItem.amount" type="text" placeholder="Amount" required />
-    <button type="submit">Add Item</button>
+    <input v-model="formItem.subcategory" placeholder="Optional subcategory" />
+    <button type="submit">Add</button>
   </form>
 </template>

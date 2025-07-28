@@ -1,8 +1,8 @@
 <script setup>
 import { useCategories } from '@/composables/useCategories'
 import { useAddCategory } from '@/composables/useAddCategory'
-import BudgetCategory from '@/components/BudgetCategory.vue'
 import AddCategoryForm from './components/AddCategoryForm.vue'
+import CategoryNode from '@/components/CategoryNode.vue'
 const { categories } = useCategories()
 const { addCategory } = useAddCategory()
 </script>
@@ -11,12 +11,18 @@ const { addCategory } = useAddCategory()
   <AddCategoryForm @submit="addCategory" />
 
   <div class="categories-container">
-    <BudgetCategory v-for="category in categories" :key="category.id" :category="category" />
+    <CategoryNode
+      v-for="category in categories"
+      :key="category.id"
+      :category="category"
+      :isRoot="true"
+    />
   </div>
 </template>
 
 <style scoped>
 .categories-container {
   display: flex;
+  flex-wrap: wrap;
 }
 </style>
