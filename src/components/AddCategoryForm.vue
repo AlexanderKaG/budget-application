@@ -12,11 +12,10 @@ const formItem = ref({
 
 function handleSubmit() {
   const rawAmount = parseFloat(formItem.value.target.toString().replace(',', '.'))
-  const parsedAmount = parseFloat(rawAmount)
 
   emit('submit', {
     ...formItem.value,
-    target: isNaN(parsedAmount) ? null : parsedAmount,
+    target: isNaN(rawAmount) ? null : rawAmount,
     parentId: formItem.value.parentId || null,
   })
 
@@ -29,7 +28,7 @@ function handleSubmit() {
 <template>
   <form @submit.prevent="handleSubmit">
     <input v-model="formItem.name" placeholder="Category name" required />
-    <input v-model="formItem.target" type="text" placeholder="Target amount" required />
+    <input v-model="formItem.target" type="text" placeholder="Target amount" />
     <select v-model="formItem.parentId">
       <option :value="null">Välj en kategori</option>
       <option v-for="category in props.categories" :key="category.id" :value="category.id">

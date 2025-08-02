@@ -16,18 +16,32 @@ const thisLevelItems = computed(() => {
 const subcategories = computed(() => {
   return props.categories.filter((subcat) => subcat.parentId === props.category.id)
 })
+
+const spent = computed(() => {
+  // Helper to recursively gather all category IDs
+  function gatherCategoryIds(id) {
+    const children = props.categories.filter((cat) => cat.parentId === id)
+    return [id, ...children.flatMap((child) => gatherCategoryIds(child.id))]
+  }
+
+  const categoryIds = gatherCategoryIds(props.category.id)
+
+  return props.masterList
+    .filter((item) => categoryIds.includes(item.categoryId))
+    .reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0)
+})
 </script>
 
 <template>
-  <div>
+  <div class="category-box">
     <div>
       <component :is="'h' + props.h2Level">
-        <span>
-          {{ category.name }}
-        </span>
-        <span>
-          {{ category.target }}
-        </span>
+        <div class="category-header">
+          <span class="category-name">{{ category.name }}</span>
+          <span class="category-target">{{ category.target != null ? category.target : '–' }}</span>
+          <span class="category-spent" v-if="spent > 0">{{ spent.toFixed(2) }}</span>
+          <span class="category-spent" v-else>0.00</span>
+        </div>
       </component>
     </div>
 
@@ -38,13 +52,72 @@ const subcategories = computed(() => {
       </li>
     </ul>
 
-    <CategoryNode
-      v-for="sub in subcategories"
-      :key="sub.id"
-      :masterList="masterList"
-      :categories="categories"
-      :category="sub"
-      :h2Level="props.h2Level + 1"
-    />
+    <div v-if="subcategories.length" class="subcategory-row">
+      <CategoryNode
+        v-for="sub in subcategories"
+        :key="sub.id"
+        :masterList="masterList"
+        :categories="categories"
+        :category="sub"
+        :h2Level="props.h2Level + 1"
+      />
+    </div>
   </div>
 </template>
+
+<style scoped>
+.category-box {
+  flex: 1 1 250px;
+  background-color: #ecf0f1;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px #dcdde1;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-heading {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.target {
+  color: #718093;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.subcategory-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.category-name {
+  flex: 1;
+  text-align: left;
+}
+
+.category-target {
+  flex: 1;
+  text-align: center;
+}
+
+.category-spent {
+  flex: 1;
+  text-align: right;
+}
+</style>

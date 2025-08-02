@@ -4,7 +4,7 @@ export function useAddCategory() {
   const { categories } = useCategories()
 
   function addCategory(category) {
-    if (!category.name || category.target === null) return
+    if (!category.name) return
 
     const exists = categories.value.some(
       (c) => c.name.toLowerCase() === category.name.trim().toLowerCase(),
