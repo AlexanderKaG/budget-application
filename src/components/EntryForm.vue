@@ -24,7 +24,6 @@ function handleSubmit() {
   formItem.value.name = ''
   formItem.value.price = ''
   formItem.value.paid = false
-  formItem.value.categoryId = ''
 }
 </script>
 

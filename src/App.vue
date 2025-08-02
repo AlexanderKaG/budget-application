@@ -17,11 +17,23 @@ const { addItem } = useAddItem()
 const topLevelCategories = computed(() => {
   return categories.value.filter((category) => !category.parentId)
 })
+
+const uncategorizedItems = computed(() => masterList.value.filter((item) => !item.categoryId))
 </script>
 
 <template>
   <AddCategoryForm :categories="categories" @submit="addCategory" />
   <EntryForm :categories="categories" @submit="addItem" />
+  <section v-if="uncategorizedItems.length">
+    <h2>Uncategorized</h2>
+    <ul>
+      <li v-for="item in uncategorizedItems" :key="item.id">
+        <span>{{ item.name }}</span>
+        <span>{{ item.price }}</span>
+      </li>
+    </ul>
+  </section>
+
   <CategoryNode
     v-for="category in topLevelCategories"
     :key="category.id"

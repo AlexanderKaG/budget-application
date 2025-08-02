@@ -23,7 +23,6 @@ function handleSubmit() {
   // Reset form
   formItem.value.name = ''
   formItem.value.target = ''
-  formItem.value.parentId = ''
 }
 </script>
 
@@ -37,6 +36,6 @@ function handleSubmit() {
         {{ category.id }}:{{ category.name }}
       </option>
     </select>
-    <button type="submit">Add Item</button>
+    <button type="submit">Add Category</button>
   </form>
 </template>
