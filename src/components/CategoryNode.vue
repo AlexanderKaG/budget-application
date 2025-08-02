@@ -2,7 +2,12 @@
 import { computed } from 'vue'
 import CategoryNode from './CategoryNode.vue'
 
-const props = defineProps({ masterList: Array, categories: Array, category: Object })
+const props = defineProps({
+  masterList: Array,
+  categories: Array,
+  category: Object,
+  h2Level: Number,
+})
 
 const thisLevelItems = computed(() => {
   return props.masterList.filter((item) => item.categoryId === props.category.id)
@@ -16,14 +21,14 @@ const subcategories = computed(() => {
 <template>
   <div>
     <div>
-      <h2>
+      <component :is="'h' + props.h2Level">
         <span>
           {{ category.name }}
         </span>
         <span>
           {{ category.target }}
         </span>
-      </h2>
+      </component>
     </div>
 
     <ul>
@@ -32,13 +37,14 @@ const subcategories = computed(() => {
         <span>{{ item.price }}</span>
       </li>
     </ul>
-  </div>
 
-  <CategoryNode
-    v-for="sub in subcategories"
-    :key="sub.id"
-    :masterList="masterList"
-    :categories="categories"
-    :category="sub"
-  />
+    <CategoryNode
+      v-for="sub in subcategories"
+      :key="sub.id"
+      :masterList="masterList"
+      :categories="categories"
+      :category="sub"
+      :h2Level="props.h2Level + 1"
+    />
+  </div>
 </template>

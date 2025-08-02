@@ -28,6 +28,7 @@ const topLevelCategories = computed(() => {
     :masterList="masterList"
     :categories="categories"
     :category="category"
+    :h2Level="2"
   />
 </template>
 
