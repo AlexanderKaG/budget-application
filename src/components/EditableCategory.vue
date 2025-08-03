@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 
-const emit = defineEmits(['save', 'cancel'])
+const emit = defineEmits(['save', 'cancel', 'delete'])
 
 const props = defineProps({
   category: Object,
@@ -26,6 +26,10 @@ function save() {
 function cancel() {
   emit('cancel')
 }
+
+function deleteCategory() {
+  emit('delete', { ...props.category })
+}
 </script>
 
 <template>
@@ -40,5 +44,6 @@ function cancel() {
     </select>
     <button type="submit">💾</button>
     <button type="button" @click="cancel">❌</button>
+    <button type="button" @click="deleteCategory">🗑️</button>
   </form>
 </template>

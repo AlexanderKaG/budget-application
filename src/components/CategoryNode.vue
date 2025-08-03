@@ -4,7 +4,7 @@ import CategoryNode from './CategoryNode.vue'
 import EditableItem from './EditableItem.vue'
 import EditableCategory from './EditableCategory.vue'
 
-const emit = defineEmits(['updateItem', 'updateCategory'])
+const emit = defineEmits(['updateItem', 'updateCategory', 'deleteCategory'])
 
 const props = defineProps({
   masterList: Array,
@@ -65,6 +65,11 @@ function updateCategory(editedCategory) {
   emit('updateCategory', { ...editedCategory })
   editingCategoryId.value = null
 }
+
+function deleteCategory(category) {
+  emit('deleteCategory', { ...category })
+  editingCategoryId.value = null
+}
 </script>
 
 <template>
@@ -86,6 +91,7 @@ function updateCategory(editedCategory) {
           :categories="categories"
           @save="updateCategory"
           @cancel="cancelEditCategory"
+          @delete="deleteCategory"
         />
       </component>
     </div>
@@ -117,6 +123,7 @@ function updateCategory(editedCategory) {
         :h2Level="props.h2Level + 1"
         @updateItem="emit('updateItem', $event)"
         @updateCategory="emit('updateCategory', $event)"
+        @deleteCategory="emit('deleteCategory', $event)"
       />
     </div>
   </div>
