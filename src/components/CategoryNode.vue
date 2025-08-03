@@ -54,13 +54,11 @@ function resetEditingId() {
 <template>
   <div class="category-box">
     <div>
-      <component :is="'h' + props.h2Level">
-        <div class="category-header">
-          <span class="category-name">{{ category.name }}</span>
-          <span class="category-target">{{ category.target != null ? category.target : '–' }}</span>
-          <span class="category-spent" v-if="spent > 0">{{ spent.toFixed(2) }}</span>
-          <span class="category-spent" v-else>0.00</span>
-        </div>
+      <component :is="'h' + props.h2Level" class="category-header">
+        <span class="category-name">{{ category.name }}</span>
+        <span class="category-target">{{ category.target != null ? category.target : '–' }}</span>
+        <span class="category-spent" v-if="spent > 0">{{ spent.toFixed(2) }}</span>
+        <span class="category-spent" v-else>0.00</span>
       </component>
     </div>
 
@@ -149,5 +147,14 @@ function resetEditingId() {
 .category-spent {
   flex: 1;
   text-align: right;
+}
+
+div > h2,
+div > h3,
+div > h4,
+div > h5,
+div > h6 {
+  margin-top: 0;
+  margin-bottom: 0.5em;
 }
 </style>

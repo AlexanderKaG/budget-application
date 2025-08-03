@@ -7,29 +7,20 @@ import { useMasterList } from './composables/useMasterList'
 import { useAddItem } from './composables/useAddItem'
 import EntryForm from './components/EntryForm.vue'
 import CategoryNode from './components/CategoryNode.vue'
+import { useSaveItemToMasterList } from './composables/useSaveItemToMasterList'
 
 const { categories } = useCategories()
 const { addCategory } = useAddCategory()
 
 const { masterList } = useMasterList()
 const { addItem } = useAddItem()
+const { saveItemToMasterList } = useSaveItemToMasterList()
 
 const topLevelCategories = computed(() => {
   return categories.value.filter((category) => !category.parentId)
 })
 
 const uncategorizedItems = computed(() => masterList.value.filter((item) => !item.categoryId))
-
-function saveUpdatedItem(item) {
-  console.log('saving updated item to master list')
-  const updated = [...masterList.value]
-  const index = updated.findIndex((i) => i.id === item.id)
-  if (index !== -1) {
-    updated[index] = { ...item }
-    masterList.value = updated
-  }
-  console.log('finished saving to master list')
-}
 </script>
 
 <template>
@@ -53,7 +44,7 @@ function saveUpdatedItem(item) {
       :categories="categories"
       :category="category"
       :h2Level="2"
-      @updateItem="saveUpdatedItem"
+      @updateItem="saveItemToMasterList"
     />
   </div>
 </template>
