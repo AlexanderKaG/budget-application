@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import CategorySelect from './CategorySelect.vue'
 
 const emit = defineEmits(['save', 'cancel', 'delete'])
 
@@ -36,12 +37,7 @@ function deleteCategory() {
   <form @submit.prevent="save" @click.stop>
     <input v-model="editedName" placeholder="Category name" />
     <input v-model="editedTarget" type="number" placeholder="Budget target" />
-    <select v-model="editedParentId">
-      <option :value="null">No parent</option>
-      <option v-for="category in categories" :key="category.id" :value="category.id">
-        {{ category.name }}
-      </option>
-    </select>
+    <CategorySelect v-model="editedParentId" :exclude-id="props.category.id" />
     <button type="submit">💾</button>
     <button type="button" @click="cancel">❌</button>
     <button type="button" @click="deleteCategory">🗑️</button>

@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue'
+import CategorySelect from './CategorySelect.vue'
 
-const emit = defineEmits(['save', 'cancel'])
+const emit = defineEmits(['save', 'cancel', 'delete'])
 
 const props = defineProps({
   item: Object,
@@ -33,6 +34,10 @@ function save() {
 function cancel() {
   emit('cancel', null)
 }
+
+function deleteItem() {
+  emit('delete', props.item)
+}
 </script>
 
 <template>
@@ -43,14 +48,10 @@ function cancel() {
       Paid
       <input type="checkbox" v-model="editedPaid" />
     </label>
-    <select v-model="editedCategoryId">
-      <option :value="null">Välj en kategori</option>
-      <option v-for="category in categories" :key="category.id" :value="category.id">
-        {{ category.name }}
-      </option>
-    </select>
+    <CategorySelect v-model="editedCategoryId" />
     <button type="submit">💾</button>
     <button type="button" @click="cancel">❌</button>
+    <button type="button" @click="deleteItem">🗑️</button>
   </form>
 </template>
 

@@ -70,6 +70,11 @@ function deleteCategory(category) {
   emit('deleteCategory', { ...category })
   editingCategoryId.value = null
 }
+
+function deleteItem(item) {
+  emit('deleteItem', item)
+  editingId.value = null
+}
 </script>
 
 <template>
@@ -104,6 +109,7 @@ function deleteCategory(category) {
             :categories="categories"
             @save="updateTheItem"
             @cancel="cancelUpdate"
+            @delete="deleteItem"
           />
         </template>
         <template v-else>
@@ -124,6 +130,7 @@ function deleteCategory(category) {
         @updateItem="emit('updateItem', $event)"
         @updateCategory="emit('updateCategory', $event)"
         @deleteCategory="emit('deleteCategory', $event)"
+        @deleteItem="emit('deleteItem', $event)"
       />
     </div>
   </div>

@@ -10,6 +10,7 @@ import CategoryNode from './components/CategoryNode.vue'
 import { useSaveItemToMasterList } from './composables/useSaveItemToMasterList'
 import { useSaveCategoryToCategories } from './composables/useSaveCategoryToCategories'
 import { useDeleteCategory } from './composables/useDeleteCategory'
+import { useDeleteItem } from './composables/useDeleteItem'
 
 const { categories } = useCategories()
 const { addCategory } = useAddCategory()
@@ -19,6 +20,7 @@ const { addItem } = useAddItem()
 const { saveItemToMasterList } = useSaveItemToMasterList()
 const { saveCategoryToCategories } = useSaveCategoryToCategories()
 const { deleteCategory } = useDeleteCategory()
+const { deleteItem } = useDeleteItem()
 
 const topLevelCategories = computed(() => {
   return categories.value.filter((category) => !category.parentId)
@@ -51,6 +53,7 @@ const uncategorizedItems = computed(() => masterList.value.filter((item) => !ite
       @updateItem="saveItemToMasterList"
       @updateCategory="saveCategoryToCategories"
       @deleteCategory="deleteCategory"
+      @deleteItem="deleteItem"
     />
   </div>
 </template>

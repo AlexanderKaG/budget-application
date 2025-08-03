@@ -1,9 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import { getFullCategoryPathName } from '@/composables/useFullCategoryPathName'
+import CategorySelect from './CategorySelect.vue'
 
 const emit = defineEmits(['submit'])
-const props = defineProps({ categories: Array })
 
 const formItem = ref({
   name: '',
@@ -36,14 +35,7 @@ function handleSubmit() {
       Paid
       <input type="checkbox" v-model="formItem.paid" />
     </label>
-    <select v-model="formItem.categoryId">
-      <option :value="null">Välj en kategori</option>
-      <option v-for="category in props.categories" :key="category.id" :value="category.id">
-        {{ getFullCategoryPathName(category.parentId) }}{{ category.parentId ? ':' : ''
-        }}{{ category.name }}
-      </option>
-    </select>
-
+    <CategorySelect v-model="formItem.categoryId" />
     <button type="submit">Add</button>
   </form>
 </template>
