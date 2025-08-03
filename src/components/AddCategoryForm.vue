@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { getFullCategoryPathName } from '@/composables/useFullCategoryPathName'
 
 const props = defineProps({ categories: Array })
 const emit = defineEmits(['submit'])
@@ -32,7 +33,8 @@ function handleSubmit() {
     <select v-model="formItem.parentId">
       <option :value="null">Välj en kategori</option>
       <option v-for="category in props.categories" :key="category.id" :value="category.id">
-        {{ category.id }}:{{ category.name }}
+        {{ getFullCategoryPathName(category.parentId) }}{{ category.parentId ? ':' : ''
+        }}{{ category.name }}
       </option>
     </select>
     <button type="submit">Add Category</button>
