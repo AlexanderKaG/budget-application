@@ -8,6 +8,7 @@ import { useAddItem } from './composables/useAddItem'
 import EntryForm from './components/EntryForm.vue'
 import CategoryNode from './components/CategoryNode.vue'
 import { useSaveItemToMasterList } from './composables/useSaveItemToMasterList'
+import { useSaveCategoryToCategories } from './composables/useSaveCategoryToCategories'
 
 const { categories } = useCategories()
 const { addCategory } = useAddCategory()
@@ -15,6 +16,7 @@ const { addCategory } = useAddCategory()
 const { masterList } = useMasterList()
 const { addItem } = useAddItem()
 const { saveItemToMasterList } = useSaveItemToMasterList()
+const { saveCategoryToCategories } = useSaveCategoryToCategories()
 
 const topLevelCategories = computed(() => {
   return categories.value.filter((category) => !category.parentId)
@@ -45,6 +47,7 @@ const uncategorizedItems = computed(() => masterList.value.filter((item) => !ite
       :category="category"
       :h2Level="2"
       @updateItem="saveItemToMasterList"
+      @updateCategory="saveCategoryToCategories"
     />
   </div>
 </template>

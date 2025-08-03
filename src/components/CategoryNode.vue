@@ -2,8 +2,9 @@
 import { computed, ref } from 'vue'
 import CategoryNode from './CategoryNode.vue'
 import EditableItem from './EditableItem.vue'
+import EditableCategory from './EditableCategory.vue'
 
-const emit = defineEmits(['updateItem'])
+const emit = defineEmits(['updateItem', 'updateCategory'])
 
 const props = defineProps({
   masterList: Array,
@@ -49,16 +50,43 @@ function cancelUpdate() {
 function resetEditingId() {
   editingId.value = null
 }
+
+const editingCategoryId = ref(null)
+
+function startEditingCategory() {
+  editingCategoryId.value = props.category.id
+}
+
+function cancelEditCategory() {
+  editingCategoryId.value = null
+}
+
+function updateCategory(editedCategory) {
+  emit('updateCategory', { ...editedCategory })
+  editingCategoryId.value = null
+}
 </script>
 
 <template>
   <div class="category-box">
     <div>
-      <component :is="'h' + props.h2Level" class="category-header">
-        <span class="category-name">{{ category.name }}</span>
-        <span class="category-target">{{ category.target != null ? category.target : '–' }}</span>
-        <span class="category-spent" v-if="spent > 0">{{ spent.toFixed(2) }}</span>
-        <span class="category-spent" v-else>0.00</span>
+      <component :is="'h' + props.h2Level">
+        <div
+          class="category-header"
+          v-if="editingCategoryId !== category.id"
+          @click="startEditingCategory"
+        >
+          <span class="category-name">{{ category.name }}</span>
+          <span class="category-target">{{ category.target ?? '–' }}</span>
+          <span class="category-spent">{{ spent.toFixed(2) }}</span>
+        </div>
+        <EditableCategory
+          v-else
+          :category="category"
+          :categories="categories"
+          @save="updateCategory"
+          @cancel="cancelEditCategory"
+        />
       </component>
     </div>
 
@@ -88,6 +116,7 @@ function resetEditingId() {
         :category="sub"
         :h2Level="props.h2Level + 1"
         @updateItem="emit('updateItem', $event)"
+        @updateCategory="emit('updateCategory', $event)"
       />
     </div>
   </div>
