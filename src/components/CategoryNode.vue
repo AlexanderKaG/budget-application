@@ -1,6 +1,9 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import CategoryNode from './CategoryNode.vue'
+import EditableItem from './EditableItem.vue'
+
+const emit = defineEmits(['updateItem'])
 
 const props = defineProps({
   masterList: Array,
@@ -18,9 +21,8 @@ const subcategories = computed(() => {
 })
 
 const spent = computed(() => {
-  // Helper to recursively gather all category IDs
   function gatherCategoryIds(id) {
-    const children = props.categories.filter((cat) => cat.parentId === id)
+    const children = props.categories.filter((categories) => categories.parentId === id)
     return [id, ...children.flatMap((child) => gatherCategoryIds(child.id))]
   }
 
@@ -30,6 +32,23 @@ const spent = computed(() => {
     .filter((item) => categoryIds.includes(item.categoryId))
     .reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0)
 })
+
+const editingId = ref(null)
+
+function updateTheItem(editedItem) {
+  console.log('updated item')
+  emit('updateItem', { ...editedItem })
+  resetEditingId()
+  console.log('finished updating item')
+}
+
+function cancelUpdate() {
+  resetEditingId()
+}
+
+function resetEditingId() {
+  editingId.value = null
+}
 </script>
 
 <template>
@@ -46,9 +65,19 @@ const spent = computed(() => {
     </div>
 
     <ul>
-      <li v-for="item in thisLevelItems" :key="item.id">
-        <span>{{ item.name }}</span>
-        <span>{{ item.price }}</span>
+      <li v-for="item in thisLevelItems" :key="item.id" @click="editingId = item.id">
+        <template v-if="editingId === item.id">
+          <EditableItem
+            :item="item"
+            :categories="categories"
+            @save="updateTheItem"
+            @cancel="cancelUpdate"
+          />
+        </template>
+        <template v-else>
+          <span>{{ item.name }}</span>
+          <span>{{ item.price }}</span>
+        </template>
       </li>
     </ul>
 
@@ -60,6 +89,7 @@ const spent = computed(() => {
         :categories="categories"
         :category="sub"
         :h2Level="props.h2Level + 1"
+        @updateItem="emit('updateItem', $event)"
       />
     </div>
   </div>

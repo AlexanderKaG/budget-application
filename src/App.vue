@@ -19,6 +19,17 @@ const topLevelCategories = computed(() => {
 })
 
 const uncategorizedItems = computed(() => masterList.value.filter((item) => !item.categoryId))
+
+function saveUpdatedItem(item) {
+  console.log('saving updated item to master list')
+  const updated = [...masterList.value]
+  const index = updated.findIndex((i) => i.id === item.id)
+  if (index !== -1) {
+    updated[index] = { ...item }
+    masterList.value = updated
+  }
+  console.log('finished saving to master list')
+}
 </script>
 
 <template>
@@ -42,6 +53,7 @@ const uncategorizedItems = computed(() => masterList.value.filter((item) => !ite
       :categories="categories"
       :category="category"
       :h2Level="2"
+      @updateItem="saveUpdatedItem"
     />
   </div>
 </template>
