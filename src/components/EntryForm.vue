@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import CategorySelect from './CategorySelect.vue'
+import { parseNumber } from '@/composables/parseLocalizedFloat'
 
 const emit = defineEmits(['submit'])
 
@@ -12,11 +13,11 @@ const formItem = ref({
 })
 
 function handleSubmit() {
-  const price = parseFloat(formItem.value.price.toString().replace(',', '.'))
+  const price = parseNumber(formItem.value.price)
 
   emit('submit', {
     name: formItem.value.name,
-    price: isNaN(price) ? null : price,
+    price: price,
     paid: formItem.value.paid,
     categoryId: formItem.value.categoryId,
   })

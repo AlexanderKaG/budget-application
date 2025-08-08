@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import CategorySelect from './CategorySelect.vue'
+import { parseNumber } from '@/composables/parseLocalizedFloat'
 
 const emit = defineEmits(['save', 'cancel', 'delete'])
 
@@ -16,12 +17,12 @@ const editedCategoryId = ref(props.item.categoryId)
 
 function save() {
   console.log('saved updated item')
-  const price = parseFloat(editedPrice.value.toString().replace(',', '.'))
+  const price = parseNumber(editedPrice.value)
 
   emit('save', {
     id: props.item.id,
     name: editedName.value,
-    price: isNaN(price) ? null : price,
+    price: price,
     paid: editedPaid.value,
     categoryId: editedCategoryId.value,
   })

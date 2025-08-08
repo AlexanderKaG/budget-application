@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import CategorySelect from './CategorySelect.vue'
+import { parseNumber } from '@/composables/parseLocalizedFloat'
 
 const emit = defineEmits(['save', 'cancel', 'delete'])
 
@@ -14,12 +15,12 @@ const editedTarget = ref(props.category.target)
 const editedParentId = ref(props.category.parentId)
 
 function save() {
-  const target = parseFloat(editedTarget.value.toString().replace(',', '.'))
+  const target = parseNumber(editedTarget.value)
 
   emit('save', {
     id: props.category.id,
     name: editedName.value,
-    target: isNaN(target) ? null : target,
+    target: target,
     parentId: editedParentId.value || null,
   })
 }
@@ -36,7 +37,7 @@ function deleteCategory() {
 <template>
   <form @submit.prevent="save" @click.stop>
     <input v-model="editedName" placeholder="Category name" />
-    <input v-model="editedTarget" type="number" placeholder="Budget target" />
+    <input v-model="editedTarget" type="text" placeholder="Budget target" />
     <CategorySelect v-model="editedParentId" :exclude-id="props.category.id" />
     <button type="submit">💾</button>
     <button type="button" @click="cancel">❌</button>
